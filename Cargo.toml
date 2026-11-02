@@ -1,0 +1,64 @@
+[package]
+name = "ecu_diagnostics"
+version = "0.107.5"
+authors = ["Ashcon Mohseninia <ashconm@outlook.com>"]
+edition = "2024"
+description = "A rust crate for ECU diagnostic servers and communication APIs"
+license = "GPL-3.0-only"
+repository = "https://github.com/rnd-ash/ecu_diagnostics"
+readme = "README.md"
+keywords = ["socketcan", "kwp2000", "uds", "j2534", "slcan"]
+exclude = ["examples/*", "build.rs", "ecu_diagnostics.hpp"]
+
+[badges]
+maintenance = { status = "actively-developed" }
+
+[package.metadata.docs.rs]
+all-features = true
+targets = [
+    "x86_64-unknown-linux-gnu",
+    "i686-pc-windows-msvc",
+    "x86_64-apple-darwin",
+]
+
+[features]
+default = ["passthru", "socketcan", "slcan"]
+socketcan = ["dep:socketcan-isotp", "dep:socketcan"]
+passthru = [
+    "dep:libloading",
+    "dep:shellexpand",
+    "dep:winreg",
+    "dep:serde_json",
+    "dep:j2534_rust",
+]
+slcan = ["dep:serialport"]
+pcan-usb = ["dep:libloading", "dep:winapi", "dep:enum-repr"]
+serde = ["dep:serde", "bitflags/serde", "automotive_diag/serde"]
+
+[dependencies]
+automotive_diag = "0.1.28"
+j2534_rust = { version = "1.5.0", optional = true }
+serde_json = { version = "1.0.150", optional = true }
+libloading = { version = "0.9.0", optional = true }
+winapi = { version = "0.3.9", optional = true }
+enum-repr = { version = "0.2.6", optional = true }
+log = "0.4.32"
+strum = "0.28.0"
+strum_macros = "0.28.0"
+thiserror = "2.0.18"
+serialport = { version = "4.9.0", optional = true }
+bitflags = "2.13.0"
+serde = { version = "1.0.219", features = ["derive"], optional = true }
+
+[dev-dependencies]
+env_logger = "0.11.10"
+
+[target.'cfg(windows)'.dependencies]
+winreg = { version = "0.10.1", optional = true }
+
+[target.'cfg(unix)'.dependencies]
+shellexpand = { version = "3.1.2", optional = true }
+
+[target.'cfg(target_os = "linux")'.dependencies]
+socketcan-isotp = { optional = true, version = "1.0.2" }
+socketcan = { version = "=3.5.0", optional = true }
